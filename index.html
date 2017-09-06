@@ -184,13 +184,15 @@
   <div class="total-time"></div>
 <script>
   // Very interested to go back to the video and see how Wes did it.
-  
+
   // Spread syntax to create "real" array from NodeList since we need to call reduce(). NodeList is iterable
   // but it doesn't get access to the juicy array methods, dirty poser.
   const times  = [...document.querySelectorAll('[data-time]')].map( li => li.dataset.time );
   const timer  = {'minutes': 0, 'seconds': 0};
 
   times.reduce(function(accumulator, currentValue ) {
+    // looks like Wes adds a .map onto split below here and maps each value over parseFloat
+    // instead of how I did it the first time.
     const [minutes,seconds] = currentValue.split(':');
     accumulator.minutes += Number.parseFloat( minutes );
     accumulator.seconds += Number.parseFloat( seconds );
