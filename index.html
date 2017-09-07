@@ -4,6 +4,21 @@
   <meta charset="UTF-8">
   <title>Videos</title>
 </head>
+<style>
+  pre {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+    display: block;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 90%;
+    color: #212529;
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 1em;
+    overflow: auto;
+    white-space: pre-wrap !important;
+  }
+</style>
 <body>
   <ul class="videos">
     <li data-time="5:43">
@@ -183,28 +198,29 @@
   </ul>
   <div class="total-time"></div>
 <script>
-  // Very interested to go back to the video and see how Wes did it.
-
-  // Spread syntax to create "real" array from NodeList since we need to call reduce(). NodeList is iterable
-  // but it doesn't get access to the juicy array methods, dirty poser.
+  /*
+    Spread syntax to create "real" array from NodeList since we need to call
+    reduce(). NodeList is iterable but it doesn't get access to the juicy array
+    methods, dirty poser.
+  */
   const times  = [...document.querySelectorAll('[data-time]')].map( li => li.dataset.time );
-  const timer  = {'minutes': 0, 'seconds': 0};
-
-  times.reduce(function(accumulator, currentValue ) {
-    // looks like Wes adds a .map onto split below here and maps each value over parseFloat
-    // instead of how I did it the first time.
+  const timer  = times.reduce(function(accumulator, currentValue ) {
+    /*
+      looks like Wes adds a .map onto split below here and maps each value over
+      parseFloat instead of how I did it the first time.
+    */
     const [minutes,seconds] = currentValue.split(':');
-    accumulator.minutes += Number.parseFloat( minutes );
-    accumulator.seconds += Number.parseFloat( seconds );
+    accumulator.minutes    += Number.parseFloat( minutes );
+    accumulator.seconds    += Number.parseFloat( seconds );
 
-    accumulator.minutes += Math.floor(accumulator.seconds / 60);
-    accumulator.seconds = accumulator.seconds % 60;
+    accumulator.minutes    += Math.floor(accumulator.seconds / 60);
+    accumulator.seconds     = accumulator.seconds % 60;
     return accumulator;
-  }, timer);
+  }, {minutes: 0, seconds: 0});
 
-  const endResult = [Math.floor(timer.minutes / 60), (timer.minutes % 60), (timer.seconds % 60)];
+  const endResult = [Math.floor(timer.minutes / 60), (timer.minutes % 60), timer.seconds];
 
-  document.querySelector('.total-time').innerHTML = `Total video time is: ${endResult.join(':')}`;
+  document.querySelector('.total-time').innerHTML = `<pre>Total video time is: ${endResult.join(':')}</pre>`;
 </script>
 </body>
 </html>
